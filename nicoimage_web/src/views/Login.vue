@@ -21,7 +21,8 @@
     </div>
 </template>
 <script>
-import { Base64 } from 'js-base64';
+import Cookies from 'js-cookie'
+
 export default {
     data() {
       return {
@@ -30,22 +31,40 @@ export default {
          rememberme:false
       }
     },
+    created(){
+        if(Cookies.get('token')){
+            this.quickLogin()
+        }
+    },
     methods: {
-      // 登录
-      async handleSubmit(){
-          let username = this.username
-          let password = this.password
-          const res = await this.$http.post('/checkuser',{username,password})
-          if(res.data.code==200){
-              window.sessionStorage.setItem('token',res.data.token)
-              this.$router.push('/home')
-          }else{
-              window.alert('登录失败')
-              this.username = ''
-              this.password = '',
-              this.rememberme = false
-          }
-      }
+        // 登录
+        async handleSubmit(){
+            let username = this.username
+            let password = this.password
+            const res = await this.$http.post('/checkuser',{username,password})
+            if(res.data.code==200){
+                window.sessionStorage.setItem('token',res.data.token)
+                if(this.rememberme){
+                    Cookies.set('token', res.data.token, { 
+                        expires: 7,
+                        path: '',
+                    })
+                }
+                this.$router.push('/home')
+            }else{
+                window.alert('登录失败')
+                this.username = ''
+                this.password = '',
+                this.rememberme = false
+            }
+        },
+
+        // 自动登录
+        async quickLogin(){
+            const token = Cookies.get('token')
+            const res = await this.$http.post('/quickcheckuser',{token})
+            console.log(res.data)
+        }
     },
 }
 </script>

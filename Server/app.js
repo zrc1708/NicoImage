@@ -31,11 +31,15 @@
     app.use(session(CONFIG, app));
 
     app.use(Bodyparser());//解析body,也就是post传参
-    app.use(cors());//解决跨域问题
+
+    //解决跨域问题
+    app.use(cors({
+        credentials: true,
+    }));
 
     app.use(async(ctx, next)=> {
         var token = ctx.headers.authorization;
-        if (ctx.request.url==='/checkuser') {
+        if (ctx.request.url==='/checkuser'||ctx.request.url==='/quickcheckuser') {
             return await next();
         }else if(token === 'null'){
             return ctx.body={
