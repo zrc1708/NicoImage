@@ -22,7 +22,6 @@
     </div>
 </template>
 <script>
-import Cookies from 'js-cookie'
 import Message from '../components/message/message.vue'
 
 export default {
@@ -39,7 +38,7 @@ export default {
         'my-message':Message
     },
     mounted(){
-        if(Cookies.get('token')){
+        if(this.$cookie.get('token')){
             this.quickLogin()
         }else{
             this.showLogin = true
@@ -67,17 +66,17 @@ export default {
             const res = await this.$http.post('/checkuser',{username,password})
             if(res.data.code==200){
                 window.sessionStorage.setItem('token',res.data.token)
-                Cookies.set('username', res.data.rs[0].username, { 
+                this.$cookie.set('username', res.data.rs[0].username, { 
                     expires: 7,
                     path: '',
                 })
                 if(this.rememberme){
-                    Cookies.set('token', res.data.token, { 
+                    this.$cookie.set('token', res.data.token, { 
                         expires: 7,
                         path: '',
                     })
                 }else{
-                    Cookies.remove('token')
+                    this.$cookie.remove('token')
                 }
                 this.$router.push('/home')
             }else{
@@ -92,7 +91,7 @@ export default {
 
         // 自动登录
         async quickLogin(){
-            const token = Cookies.get('token')
+            const token = this.$cookie.get('token')
 
             const res = await this.$http.post('/quickcheckuser',{token}).catch(function (error) {})
             if(res==undefined) return
@@ -100,7 +99,7 @@ export default {
             if(res.data.code==200){
                 // 更新token
                 window.sessionStorage.setItem('token',res.data.token)
-                Cookies.set('token', res.data.token, { 
+                this.$cookie.set('token', res.data.token, { 
                         expires: 7,
                         path: '',
                 })
