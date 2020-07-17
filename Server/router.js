@@ -22,7 +22,7 @@ router1.post('/checkuser', async ctx => {
         let secret = 'niconiconi' // 指定密钥
         // 生成token
         let token = jwt.sign(userToken, secret, {
-            expiresIn: '15d'
+            expiresIn: '7d'
         })
 
         // token存入mysql
@@ -53,7 +53,25 @@ router1.post('/quickcheckuser', async ctx => {
     const sql = `SELECT * FROM user where token = '${token}'`;
     const [rs] = await connection.query(sql);
     if (rs.length === 1) {
+        let userToken = {
+            username:rs[0].username,
+            id: rs[0].id,
+        }
+        let secret = 'niconiconi'
+        // 生成新token
+        let token = jwt.sign(userToken, secret, {
+            expiresIn: '15d'
+        })
+
+        // token存入mysql
+        const sql = `UPDATE user SET token = '${token}' WHERE id = '${rs[0].id}';`
+        await connection.query(sql);
+        // 连接结束
+        connection.end(function(err){}) 
+
         ctx.body = {
+            token,
+            rs,
             message: '自动登录成功',
             code: 200
         }

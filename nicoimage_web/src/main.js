@@ -14,6 +14,10 @@ axios.interceptors.request.use(config=>{
   config.headers.Authorization = window.sessionStorage.getItem('token')
   return config
 })
+// axios.interceptors.response.use(()=>{},err=>{
+//   // 错误处理
+//   return Promise.resolve(err)
+// })
 axios.defaults.withCredentials= true//允许跨域时携带cookie
 Vue.prototype.$http = axios
 

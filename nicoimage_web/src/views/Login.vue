@@ -1,5 +1,6 @@
 <template>
-    <div class="container">
+    <div class="container" v-if="showLogin">
+        <my-message :type='messageType' :text='messageText' v-if="messageShow"></my-message>
         <div class="loginBox">
             <h3>妮可图床</h3>
             <form @submit.prevent="handleSubmit">
@@ -14,7 +15,7 @@
                 <div class="finalLine">
                     <input type="checkbox" name="checkbox" id="checkbox" v-model="rememberme">
                     <label class="remme" for="checkbox">记住我</label>
-                    <input class="submitInput" type="submit" value="登录">
+                    <input class="submitInput" type="submit" value="登录" @keyup.enter="submit">
                 </div>
             </form>
         </div>
@@ -22,37 +23,67 @@
 </template>
 <script>
 import Cookies from 'js-cookie'
+import Message from '../components/message/message.vue'
 
 export default {
     data() {
       return {
          username:'',
          password:'',
-         rememberme:false
+         rememberme:false,
+         messageShow:false,
+         showLogin:false
       }
     },
-    created(){
+    components:{
+        'my-message':Message
+    },
+    mounted(){
         if(Cookies.get('token')){
             this.quickLogin()
+        }else{
+            this.showLogin = true
         }
     },
     methods: {
         // 登录
         async handleSubmit(){
+            // 先将消息提示销毁备用
+            this.messageShow = false
             let username = this.username
             let password = this.password
+
+            // 用户没有输入信息
+            if(username==''||password==''){
+                this.messageType = 'error'
+                this.messageText = '信息输入不全'
+                setTimeout(() => {
+                    this.messageShow = true
+                }, 50);
+                return
+            }
+
+            // 用户输入了信息，进行请求
             const res = await this.$http.post('/checkuser',{username,password})
             if(res.data.code==200){
                 window.sessionStorage.setItem('token',res.data.token)
+                Cookies.set('username', res.data.rs[0].username, { 
+                    expires: 7,
+                    path: '',
+                })
                 if(this.rememberme){
                     Cookies.set('token', res.data.token, { 
                         expires: 7,
                         path: '',
                     })
+                }else{
+                    Cookies.remove('token')
                 }
                 this.$router.push('/home')
             }else{
-                window.alert('登录失败')
+                this.messageType = 'error'
+                this.messageText = '登录失败'
+                this.messageShow = true
                 this.username = ''
                 this.password = '',
                 this.rememberme = false
@@ -62,8 +93,23 @@ export default {
         // 自动登录
         async quickLogin(){
             const token = Cookies.get('token')
-            const res = await this.$http.post('/quickcheckuser',{token})
-            console.log(res.data)
+
+            const res = await this.$http.post('/quickcheckuser',{token}).catch(function (error) {})
+            if(res==undefined) return
+
+            if(res.data.code==200){
+                // 更新token
+                window.sessionStorage.setItem('token',res.data.token)
+                Cookies.set('token', res.data.token, { 
+                        expires: 7,
+                        path: '',
+                })
+                this.$router.push('/home')
+            }else{
+                this.messageType = 'error'
+                this.messageText = '自动登录失败'
+            }
+            this.messageShow = true
         }
     },
 }
