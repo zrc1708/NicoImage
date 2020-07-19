@@ -4,7 +4,7 @@
             <div></div>
             <my-bar :items="['上传','图库','接口']" @clickbar="clickbar" class="bar"></my-bar>
             <div class="leave">
-                <span>欢迎，{{username}}</span><span>退出登录</span>
+                <span>欢迎，{{username}}</span><span @click="logout">退出登录</span>
             </div>
         </header>
         <router-view></router-view>
@@ -37,6 +37,13 @@ export default {
                 return
             }
             this.$router.push(bar[item])     
+        },
+        //退出登录 
+        logout(){
+            window.sessionStorage.clear()
+            this.$cookie.remove('token')
+            this.$cookie.remove('username')
+            this.$router.push('/login') 
         }
     },
 }
@@ -63,6 +70,7 @@ header{
         }
         span:nth-child(2){
             cursor: pointer;
+            text-decoration: underline;
         }
     }
 }
