@@ -7,6 +7,7 @@
                 <ul>
                     <li v-for="(item,index) in imgarr" :key="index">
                         <img :src="item" alt="">
+                        <input type="text" v-model="filesNameArr[index]">
                     </li>
                 </ul>
                 <span class="uploadboxText">
@@ -16,6 +17,9 @@
                 </span>
             </div>
             <div class="uploadButton" @click="uploadImage" v-if="imgarr.length!=0">上传</div>
+        </div>
+        <div>
+            处理中
         </div>
     </div>
 </template>
@@ -27,6 +31,7 @@ import Message from '../components/message/message.vue'
             return{
                 imgarr:[],
                 filesArr:[],
+                filesNameArr:[],
                 messageShow:false
             }
         },
@@ -42,35 +47,50 @@ import Message from '../components/message/message.vue'
             },       
             //获取所选文件的信息并进行上传
             checkField(e){
-                let arr = e.target.value.split('\\')
-                let name = arr[arr.length-1]
-
-                const upload = document.querySelector('.upload')
-
                 window.URL = window.URL || window.webkitURL;
-
                 this.message('success','选择图片成功')
-
                 this.$refs.file.files.forEach(item => {
                     this.imgarr.push(window.URL.createObjectURL(item))
                     this.filesArr.push(item)
+                    this.filesNameArr.push(item.name)
                 });
             },
-            async uploadImage(){//调用上传文件接口
-                // console.log(this.filesArr)
+            // 文件上传
+            async uploadImage(){
+                // 检测文件后缀是否被修改
+                let nameArr = this.filesNameArr
+                let flag = true
+                this.filesArr.forEach((item,index)=>{
+                    const name = item.name
+                    if(name.split('.')[1]!==nameArr[index].split('.')[1]){
+                        this.message('error','请不要修改文件后缀')
+                        flag = false
+                    }
+                })
+                if(!flag) return
+
+                // 上传文件
                 const formData = new FormData()
                 const files = this.filesArr
                 files.forEach(item=>{
                     formData.append("file",item)
                 })
-                console.log(formData.getAll('file'));
-                await this.$http.post("uploadimage",formData)
+                const fileNames = this.filesNameArr
+                formData.append('fileNames',fileNames)
+                const res = await this.$http.post("uploadimage",formData)
+                if(res.data.code==200){
+                    this.message('success','图片上传成功')
+                }else{
+                    this.message('error','图片上传失败')
+                }
             },
 
             // 清除选择
             clear(){
                 this.message('success','已清除选择')
                 this.imgarr = []
+                this.filesArr = []
+                this.filesNameArr = []
             },
 
             message(type,text){
@@ -115,6 +135,7 @@ import Message from '../components/message/message.vue'
                 files.forEach(item => {
                     this.imgarr.push(window.URL.createObjectURL(item))
                     this.filesArr.push(item)
+                    this.filesNameArr.push(item.name)
                 });
             }
         },
@@ -191,9 +212,18 @@ ul{
         list-style: none;
         margin: 10px;
         border: 1px solid lightblue;
+        text-align: center;
         img{
             height: 180px;
-            vertical-align: bottom;
+            display: block;
+            margin: 0 auto;
+        }
+        input{
+            width: 95%;
+            border: none;
+            height: 25px;
+            outline-style: none;
+            text-align: center;
         }
     }
 }

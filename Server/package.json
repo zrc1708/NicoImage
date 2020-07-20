@@ -21,6 +21,7 @@
     "koa-session": "^5.12.3",
     "koa-static-cache": "^5.1.2",
     "koa2-cors": "^2.0.6",
+    "mime-types": "^2.1.27",
     "mysql2": "^2.0.2",
     "svg-captcha": "^1.4.0"
   }
