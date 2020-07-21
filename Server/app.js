@@ -39,9 +39,11 @@
 
     app.use(async(ctx, next)=> {
         var token = ctx.headers.authorization;
-        if (ctx.request.url==='/checkuser'||ctx.request.url==='/quickcheckuser') {
+        if (ctx.request.url==='/checkuser'||
+            ctx.request.url==='/quickcheckuser'||
+            ctx.request.url.indexOf('/getimage')!==-1) {
             return await next();
-        }else if(token === 'null'){
+        }else if(!token){
             return ctx.body={
                 code:'444',
                 message:"该功能只有登录用户可以使用",

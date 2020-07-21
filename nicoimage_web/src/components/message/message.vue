@@ -23,10 +23,9 @@
 <style lang="less" scoped>
 .mymessage{
     position: fixed;
-    // top: 15px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(255, 255, 255, 0.9);
     height: 40px;
     min-width: 150px;
     border-radius: 5px;

@@ -32,39 +32,45 @@ filerouters.post('/uploadimage', async (ctx, next) => {
         reader.pipe(upStream);
     })
 
+    var imageUrl = []
     // 将文件信息写入数据库
     const connection = await Mysql.createConnection(mysql_nico)
     fileNames.forEach(async (item)=>{
         let filepath = path.join(__dirname+'/images')+ `/${item}`
-        const sql = `INSERT INTO image (filename, path) VALUES ( '${item}', '${filepath}');`
+        // 顺便生成图片文件的访问地址
+        let url = 'http://'+ctx.header.host+'/getimage/'+item
+        imageUrl.push(url)
+        const sql = `INSERT INTO image (filename, path,url) VALUES ( '${item}', '${filepath}','${url}');`
         const [rs] = await connection.query(sql);
     })
     connection.end(function(err){})
 
-
     return ctx.body = {
         message:"上传成功！",
+        imageUrl,
         code:200,
-        };
+    };
 });
 
 // 获取图片接口
-filerouters.get('/getimage', async (ctx, next) => {
-    // let filePath = path.join(__dirname, ctx.url); //图片地址
-	// let file = null;
-	// try {
-	//     file = fs.readFileSync(filePath); //读取文件
-	// } catch (error) {
-	// 	//如果服务器不存在请求的图片，返回默认图片
-	//     filePath = path.join(__dirname, '/images/default.png'); //默认图片地址
-	//     file = fs.readFileSync(filePath); //读取文件	    
-    // }
-    
-    let filePath = '/Users/nico/Desktop/NicoImage/Server/images/透明2.png'
-    file = fs.readFileSync(filePath); //读取文件
-	let mimeType = mime.lookup(filePath); //读取图片文件类型
-	ctx.set('content-type', mimeType); //设置返回类型
-	ctx.body = file; //返回图片
+filerouters.get('/getimage/:imageName', async (ctx, next) => {
+    const imageName = ctx.params.imageName.trim()
+    // 设置文件路径
+    let filePath = path.join(__dirname)+'/images/'+imageName
+	try {
+	    //读取文件
+        file = fs.readFileSync(filePath)
+	} catch (error) {
+		//如果服务器不存在请求的图片，返回默认图片
+	    filePath = path.join(__dirname, '/404/404.png')
+	    file = fs.readFileSync(filePath)    
+    }
+    //读取图片文件类型
+    let mimeType = mime.lookup(filePath)
+    //设置返回类型
+    ctx.set('content-type', mimeType)
+    //返回图片
+	ctx.body = file
 });
 
 // 文件下载接口(文件目录不包括自身)

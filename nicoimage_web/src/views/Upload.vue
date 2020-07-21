@@ -18,19 +18,25 @@
             </div>
             <div class="uploadButton" @click="uploadImage" v-if="imgarr.length!=0">上传</div>
         </div>
-        <div>
-            处理中
+        <div v-if="imageUrl">
+            <my-imagebox v-for="(item,index) in imageUrl" :key="index" :imagesrc="item" :imageurl="imageUrl[index]" @copyfinish="copyOK"></my-imagebox>
         </div>
     </div>
 </template>
 <script>
 import Message from '../components/message/message.vue'
+import ImageBox from '../components/imagebox/imagebox.vue'
 
     export default {
         data(){
             return{
+                // 选择的图片本地地址
                 imgarr:[],
+                imgarr2:[],
+                // 选择的图片文件对象
                 filesArr:[],
+                // 返回的图片图传地址
+                imageUrl:[],
                 filesNameArr:[],
                 messageShow:false
             }
@@ -49,8 +55,15 @@ import Message from '../components/message/message.vue'
             checkField(e){
                 window.URL = window.URL || window.webkitURL;
                 this.message('success','选择图片成功')
+                // 数量判断
+                if(this.imgarr.length+this.$refs.file.files.length>16){
+                    return this.message('error','最多一次上传16张图片')
+                }
                 this.$refs.file.files.forEach(item => {
+                    // 上传前展示选择的图片
                     this.imgarr.push(window.URL.createObjectURL(item))
+                    // 上传成功后使用
+                    this.imgarr2.push(window.URL.createObjectURL(item))
                     this.filesArr.push(item)
                     this.filesNameArr.push(item.name)
                 });
@@ -80,6 +93,12 @@ import Message from '../components/message/message.vue'
                 const res = await this.$http.post("uploadimage",formData)
                 if(res.data.code==200){
                     this.message('success','图片上传成功')
+                    // 保存图片地址
+                    this.imageUrl = res.data.imageUrl
+                    // 清除已上传图片相关信息
+                    this.imgarr = []
+                    this.filesArr = []
+                    this.filesNameArr = []
                 }else{
                     this.message('error','图片上传失败')
                 }
@@ -89,6 +108,7 @@ import Message from '../components/message/message.vue'
             clear(){
                 this.message('success','已清除选择')
                 this.imgarr = []
+                // this.imgarr2 = []
                 this.filesArr = []
                 this.filesNameArr = []
             },
@@ -117,8 +137,8 @@ import Message from '../components/message/message.vue'
                 e.preventDefault();
                 let files = e.dataTransfer.files;
                 // 数量判断
-                if(this.imgarr.length+files.length>8){
-                    return this.message('error','最多一次上传8张图片')
+                if(this.imgarr.length+files.length>16){
+                    return this.message('error','最多一次上传16张图片')
                 }
                 // 内容判断
                 let flag = 0
@@ -137,10 +157,15 @@ import Message from '../components/message/message.vue'
                     this.filesArr.push(item)
                     this.filesNameArr.push(item.name)
                 });
+            },
+            // 拷贝成功回调
+            copyOK(){
+                this.message('success','拷贝成功')
             }
         },
         components:{
-            'my-message':Message
+            'my-message':Message,
+            'my-imagebox':ImageBox
         },
     }
 </script>
@@ -150,7 +175,7 @@ import Message from '../components/message/message.vue'
     border: 3px #8b8b8b dashed;
     box-sizing: border-box;
     width: 98%;
-    height: 500px;
+    min-height: 500px;
     border-radius: 10px;
     margin: 20px auto;
     display: flex;
@@ -208,6 +233,7 @@ ul{
     padding: 0;
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     li{
         list-style: none;
         margin: 10px;
