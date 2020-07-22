@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <ul>
-            <li class="tab" @click="cloudMove($event);clickTab(item) " v-for="(item,index) in items" :key="index">{{item}}</li>
+            <li class="tab" @click="cloudMove($event);clickTab(item.name) " v-for="(item,index) in items" :key="index">{{item.name}}</li>
         </ul>
         <span class="cloud"><span></span></span>
     </div>

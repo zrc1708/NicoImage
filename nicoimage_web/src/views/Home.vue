@@ -2,7 +2,7 @@
     <div class="container">
         <header>
             <div></div>
-            <my-bar :items="['上传','图库','接口']" @clickbar="clickbar" class="bar"></my-bar>
+            <my-bar :items="tabbar" @clickbar="clickbar" class="bar"></my-bar>
             <div class="leave">
                 <span>欢迎，{{username}}</span><span @click="logout">退出登录</span>
             </div>
@@ -16,7 +16,8 @@ import Bar from '../components/bar/bar.vue'
 export default {
     data() {
         return {
-            username:''
+            username:'',
+            tabbar:[{name:'上传',router:'/upload'},{name:'图库',router:'/pictures'},{name:'接口',router:'/api'}]
         }
     },
     components:{
@@ -51,18 +52,13 @@ export default {
 
 <style lang="less" scoped>
 header{
-    display: flex;
+    display: grid;
     border-bottom: 1px solid rgba(0,0,0,.1);
     height: 60px;
     align-items: center;
     justify-content: center;
-
-    div{
-        flex: 1;
-    }
-    .bar{
-        flex: 1;
-    }
+    grid-template-columns: 1fr 400px 1fr;
+    
     .leave{
         text-align: right;
         span{

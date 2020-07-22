@@ -73,6 +73,19 @@ filerouters.get('/getimage/:imageName', async (ctx, next) => {
 	ctx.body = file
 });
 
+// 获取所有图片
+filerouters.get('/getallimages', async (ctx, next) => {
+    const connection = await Mysql.createConnection(mysql_nico)
+    const sql = "SELECT * FROM image";
+    const [rs] = await connection.query(sql);
+    connection.end(function(err){})
+    ctx.body = {
+        code:200,
+        message:"获取所有图片成功！",
+        rs
+    }
+});
+
 // 文件下载接口(文件目录不包括自身)
 filerouters.post('/download', async function (ctx) {
     const filename = ctx.request.body.filename
