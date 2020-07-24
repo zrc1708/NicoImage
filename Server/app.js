@@ -33,15 +33,14 @@
     app.use(Bodyparser());//解析body,也就是post传参
 
     //解决跨域问题
-    app.use(cors({
-        credentials: true,
-    }));
+    app.use(cors());
 
     app.use(async(ctx, next)=> {
         var token = ctx.headers.authorization;
         if (ctx.request.url==='/checkuser'||
             ctx.request.url==='/quickcheckuser'||
-            ctx.request.url.indexOf('/getimage')!==-1) {
+            ctx.request.url.indexOf('/getimage')!==-1||
+            ctx.request.url.indexOf('/nicoimageapi')!==-1) {
             return await next();
         }else if(!token){
             return ctx.body={

@@ -19,7 +19,7 @@
             <div class="uploadButton" @click="uploadImage" v-if="imgarr.length!=0">上传</div>
         </div>
         <div v-if="imageUrl">
-            <my-imagebox v-for="(item,index) in imageUrl" :key="index" :imagesrc="item" :imageurl="imageUrl[index]" @copyfinish="copyOK"></my-imagebox>
+            <my-imagebox v-for="(item,index) in imageUrl" :key="index" :imagesrc="imgarr2[index]" :imageurl="imageUrl[index]" @copyfinish="copyOK"></my-imagebox>
         </div>
     </div>
 </template>
@@ -35,7 +35,7 @@ import ImageBox from '../components/imagebox/imagebox.vue'
                 imgarr2:[],
                 // 选择的图片文件对象
                 filesArr:[],
-                // 返回的图片图传地址
+                // 返回的图片图床地址
                 imageUrl:[],
                 filesNameArr:[],
                 messageShow:false
