@@ -1,6 +1,6 @@
 <template>
     <div class="imagecardcontainer">
-        <img :src="image.url" alt="">
+        <img v-lazy="image.url" alt="">
         <ul>
             <li><div class="button watch" @click="watchBigImage"></div></li>
             <li><div class="button url" @click="copyUrl"></div></li>

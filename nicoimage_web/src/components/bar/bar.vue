@@ -76,7 +76,7 @@
         span{
             background-color: rgb(43,128,185);
             border-radius: 3px;
-            width: 60%;
+            width: 40%;
             height:6px;
             display: block;
             margin: 0 auto;

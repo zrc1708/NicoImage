@@ -2,7 +2,7 @@
     <div>
         <div class="apibox">
             <p>本站提供api能在其他项目中将项目上传图床</p>
-            <p><strong>接口地址：</strong>http://img.jibei66.com/nicoimageapi/$userkey</p>
+            <p><strong>接口地址：</strong>http://imgapi.jibei66.com/nicoimageapi/$userkey</p>
             <p><strong>方法：</strong>POST</p>
             <p><strong>请求参数：</strong></p>
             <table>
@@ -75,7 +75,7 @@
 </script>
 <style lang="less" scoped>
     .apibox{
-        max-width: 900px;
+        max-width: 800px;
         margin: 0 auto;
         padding-top: 20px;
     }

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import VueLazyload from 'vue-lazyload'
 
 import './assets/css/global.css'
 
@@ -19,6 +20,10 @@ Vue.prototype.$http = axios
 
 import Cookies from 'js-cookie'
 Vue.prototype.$cookie = Cookies
+
+Vue.use(VueLazyload, {
+  loading: require('./assets/loading.gif')
+})
 
 new Vue({
   router,

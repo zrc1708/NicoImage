@@ -8,10 +8,12 @@
             </div>
         </header>
         <router-view></router-view>
+        <my-footer></my-footer>
     </div>
 </template>
 <script>
 import Bar from '../components/bar/bar.vue'
+import Footer from '../components/foot/foot.vue'
 
 export default {
     data() {
@@ -21,7 +23,8 @@ export default {
         }
     },
     components:{
-        'my-bar':Bar
+        'my-bar':Bar,
+        'my-footer':Footer
     },
     created(){
         this.username = this.$cookie.get('username')
