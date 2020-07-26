@@ -105,8 +105,10 @@ export default {
                 })
                 this.$router.push('/home')
             }else{
+                this.showLogin = true
                 this.messageType = 'error'
                 this.messageText = '自动登录失败'
+                this.$cookie.remove('token')
             }
             this.messageShow = true
         }

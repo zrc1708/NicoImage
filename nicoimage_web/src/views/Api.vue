@@ -22,7 +22,7 @@
                     <td>fileNames</td>
                     <td>string</td>
                     <td>是</td>
-                    <td>保存图片用的文件名，如有多个，使用逗号隔开</td>
+                    <td>保存图片用的文件名（包含后缀），如有多个，使用逗号隔开</td>
                 </tr>
                 <tr>
                     <td>file</td>
@@ -57,7 +57,9 @@
             <p><strong>请求样例</strong></p>
             http://imgapi.jibei66.com/nicoimageapi/1b67sac
             <p><strong>返回样例</strong></p>
-            <p>{"message": "上传成功！","imageUrl": ["http://127.0.0.1:8888/getimage/testimage.png"],"code": 200}</p>
+            <p>{"message": "上传成功！","imageUrl": ["http://imgapi.jibei66.com/getimage/jibei.jpg"],"code": 200}</p>
+            <p><strong>详细教程</strong></p>
+            <a href="http://blog.jibei66.com/#/readarticle?articleid=44" target="view_window">http://blog.jibei66.com/#/readarticle?articleid=44</a>
         </div>
     </div>
 </template>

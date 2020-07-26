@@ -1,5 +1,5 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+// import Vue from 'vue'
+// import VueRouter from 'vue-router'
 
 const Login = () => import(/* webpackChunkName: "login" */'../views/Login.vue')
 const Home = () => import(/* webpackChunkName: "home" */'../views/Home.vue')
